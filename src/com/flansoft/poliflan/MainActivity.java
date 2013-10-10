@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Random;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -19,10 +21,16 @@ public class MainActivity extends Activity {
 
 	TextView upperText;
 	TextView lowerText;
+	TextView goodText;
+	TextView badText;
 	Button[] answerButtons = new Button[5];
 	
 	int countUpperWords = 1;
 	int countLowerWords = 0;
+	
+	SharedPreferences preferences;
+	final String TEST_GOOD = "test_good";
+	final String TEST_BAD = "test_bad";
 	
 	List<Pronoun> pronouns = new ArrayList<Pronoun>();
 	Pronoun question;
@@ -79,6 +87,7 @@ public class MainActivity extends Activity {
 	}
 	
 	private void generateQuestion() {
+		loadStat();
 		upperText.setBackgroundColor(getResources().getColor(R.color.white));
 		lowerText.setText("");
 		setClickableAnswerButtons(true);
@@ -98,6 +107,8 @@ public class MainActivity extends Activity {
 		
 		upperText = (TextView)findViewById(R.id.textView1);
 		lowerText = (TextView)findViewById(R.id.textView2);
+		goodText = (TextView)findViewById(R.id.textView3);
+		badText = (TextView)findViewById(R.id.textView4);
 		
 		int i = 0;
 		answerButtons[i++] = (Button)findViewById(R.id.button1);
@@ -129,7 +140,9 @@ public class MainActivity extends Activity {
 		Log.d("CHECK_lower", answer);
 		if (model_answer.equals(answer)) {
 			upperText.setBackgroundColor(getResources().getColor(R.color.green));
+			saveStat(true);
 		} else{
+			saveStat(false);
 			upperText.setBackgroundColor(getResources().getColor(R.color.red));
 		}
 		Handler handler = new Handler();
@@ -144,11 +157,6 @@ public class MainActivity extends Activity {
 		for (int i = 0; i < answerButtons.length; i++){
 			answerButtons[i].setClickable(set);
 		}
-//		LinearLayout layout = (LinearLayout) findViewById(R.id.LinearLayout1);
-//		for (int i = 0; i < layout.getChildCount(); i++) {
-//		    View child = layout.getChildAt(i);
-//		    child.setClickable(false);
-//		}setClickableAnswerButtons(false);
 	}
 	
 	// Implementing Fisher–Yates shuffle
@@ -162,4 +170,28 @@ public class MainActivity extends Activity {
 			ar[i] = a;
 		}
 	}
+	
+	private void loadStat(){
+		preferences = getPreferences(MODE_PRIVATE);
+		goodText.setText(preferences.getString(TEST_GOOD, "0"));
+		badText.setText(preferences.getString(TEST_BAD, "0"));
+		
+	}
+	
+	private void saveStat(boolean ifGood){
+		preferences = getPreferences(MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		
+		if (ifGood){
+			int sumGoodCount = Integer.parseInt(preferences.getString(TEST_GOOD, "0")) + 1;
+			editor.putString(TEST_GOOD, "" + sumGoodCount);
+			Log.d("sumGoodCount", "" + sumGoodCount);
+		}else{
+			int sumBadCount = Integer.parseInt(preferences.getString(TEST_BAD, "0")) + 1;
+			editor.putString(TEST_BAD, "" + sumBadCount);
+			Log.d("sumBadCount", "" + sumBadCount);
+		}
+		editor.commit();
+	}
+	
 }
