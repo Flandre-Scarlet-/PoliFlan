@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,75 +19,30 @@ public class MainActivity extends Activity {
 	TextView upperText;
 	TextView lowerText;
 	List<Button> answerButtons = new ArrayList<Button>();
+	TextView goodText;
+	TextView badText;
 	
-	int countUpperWords = 1;
+	int countUpperWords = 2;
 	int countLowerWords = 0;
 	
-	List<Pronoun> pronouns = new ArrayList<Pronoun>();
-	List<Verb> verbs = new ArrayList<Verb>();
+	SharedPreferences preferences;
+	final String TEST_GOOD = "test_good";
+	final String TEST_BAD = "test_bad";
+	
 	Lesson1Question question;
 	
-	public MainActivity() {
-		Pronoun pronoun = new Pronoun("I", "io", "я", Conjugation.FIRST);
-		pronouns.add(pronoun);
-		
-		pronoun = new Pronoun("you", "tu", "ты", Conjugation.SECOND);
-		pronouns.add(pronoun);
-
-		pronoun = new Pronoun("he", "lui", "он", Conjugation.THIRD);
-		pronouns.add(pronoun);
-
-		pronoun = new Pronoun("she", "lei", "она", Conjugation.THIRD);
-		pronouns.add(pronoun);
-
-		pronoun = new Pronoun("we", "noi", "мы", Conjugation.FIRST_PLURAL);
-		pronouns.add(pronoun);
-		
-		pronoun = new Pronoun("you", "voi", "ты", Conjugation.SECOND_PLURAL);
-		pronouns.add(pronoun);	
-
-		pronoun = new Pronoun("they", "loro", "они", Conjugation.THIRD_PLURAL);
-		pronouns.add(pronoun);
-		
-		Verb verb = new Verb("speak", "parlare", "говорить");
-		verbs.add(verb);
-		
-		verb = new Verb("eat", "mangiare", "кушать");
-		verbs.add(verb);
-		
-		verb = new Verb("look", "guardare", "смотреть");
-		verbs.add(verb);
-		
-		verb = new Verb("play", "giocare", "играть");
-		verbs.add(verb);
-		
-		verb = new Verb("work", "lavorare", "работать");
-		verbs.add(verb);
-		
-		verb = new Verb("love", "amare", "любить");
-		verbs.add(verb);
-		
-		verb = new Verb("listen", "ascoltare", "слушать");
-		verbs.add(verb);
-		
-		verb = new Verb("learn", "imparare", "учить");
-		verbs.add(verb);
-		
-		verb = new Verb("live", "abitare", "жить");
-		verbs.add(verb);
-	}
-	
 	private void generateQuestion() {
+		countLowerWords = 0;
+		loadStat();
 		upperText.setBackgroundColor(getResources().getColor(R.color.white));
 		lowerText.setText("");
 		setClickableAnswerButtons(true);
-		Collections.shuffle(pronouns);
-		Collections.shuffle(verbs);
 		Collections.shuffle(answerButtons);
-		question = new Lesson1Question(pronouns.get(0), verbs.get(0));
+		question = new Lesson1Question();
 		upperText.setText(question.getEnglish());
+		Translatable[] choices = question.getPronounChoices();
 		for (int i = 0; i < answerButtons.size(); ++i) {
-			answerButtons.get(i).setText(pronouns.get(i).getItalian());
+			answerButtons.get(i).setText(choices[i].getItalian());
 		}
 	};
 	
@@ -96,6 +53,8 @@ public class MainActivity extends Activity {
 		
 		upperText = (TextView)findViewById(R.id.textView1);
 		lowerText = (TextView)findViewById(R.id.textView2);
+		goodText = (TextView)findViewById(R.id.textView3);
+		badText = (TextView)findViewById(R.id.textView4);
 		
 		answerButtons.add((Button) findViewById(R.id.button1));
 		answerButtons.add((Button) findViewById(R.id.button2));
@@ -109,12 +68,15 @@ public class MainActivity extends Activity {
 	public void onClick(View v){
 		Button b = (Button)v;
 		String buttonText = b.getText().toString();
-		Log.d("upperText", upperText.getText().toString());
 		lowerText.setText(lowerText.getText() + buttonText + " ");
-		Log.d("lowerText", lowerText.getText().toString());
 		countLowerWords++;
 		if (countUpperWords <= countLowerWords) {
 			check();
+		} else {
+			Translatable[] choices = question.getVerbChoices();
+			for (int i = 0; i < answerButtons.size(); ++i) {
+				answerButtons.get(i).setText(choices[i].getItalian());
+			}
 		}
 	}
 	 
@@ -126,7 +88,9 @@ public class MainActivity extends Activity {
 		Log.d("CHECK_lower", answer);
 		if (model_answer.equals(answer)) {
 			upperText.setBackgroundColor(getResources().getColor(R.color.green));
+			saveStat(true);
 		} else{
+			saveStat(false);
 			upperText.setBackgroundColor(getResources().getColor(R.color.red));
 		}
 		Handler handler = new Handler();
@@ -142,4 +106,28 @@ public class MainActivity extends Activity {
 			button.setClickable(set);
 		}
 	}
+	
+	private void loadStat(){
+		preferences = getPreferences(MODE_PRIVATE);
+		goodText.setText(preferences.getString(TEST_GOOD, "0"));
+		badText.setText(preferences.getString(TEST_BAD, "0"));
+		
+	}
+	
+	private void saveStat(boolean ifGood){
+		preferences = getPreferences(MODE_PRIVATE);
+		Editor editor = preferences.edit();
+		
+		if (ifGood){
+			int sumGoodCount = Integer.parseInt(preferences.getString(TEST_GOOD, "0")) + 1;
+			editor.putString(TEST_GOOD, "" + sumGoodCount);
+			Log.d("sumGoodCount", "" + sumGoodCount);
+		}else{
+			int sumBadCount = Integer.parseInt(preferences.getString(TEST_BAD, "0")) + 1;
+			editor.putString(TEST_BAD, "" + sumBadCount);
+			Log.d("sumBadCount", "" + sumBadCount);
+		}
+		editor.commit();
+	}
+	
 }
