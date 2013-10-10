@@ -61,14 +61,14 @@ public class MainActivity extends Activity {
 	
 	public void onClick(View v){
 		Button b = (Button)v;
-	    String buttonText = b.getText().toString();
-	    Log.d("upperText", upperText.getText().toString());
-	    lowerText.setText(lowerText.getText() + buttonText + " ");
-	    Log.d("lowerText", lowerText.getText().toString());
-	    countLowerWords++;
-	    if (countUpperWords <= countLowerWords) {
-	    	check();
-	    }
+		String buttonText = b.getText().toString();
+		Log.d("upperText", upperText.getText().toString());
+		lowerText.setText(lowerText.getText() + buttonText + " ");
+		Log.d("lowerText", lowerText.getText().toString());
+		countLowerWords++;
+		if (countUpperWords <= countLowerWords) {
+			check();
+		}
 	}
 	 
 	public void check(){
@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
 		String answer = lowerText.getText().toString().trim();
 		Log.d("CHECK_upper", model_answer);
 		Log.d("CHECK_lower", answer);
-		if (model_answer.equals(answer)){
+		if (model_answer.equals(answer)) {
 			upperText.setBackgroundColor(getResources().getColor(R.color.green));
 		} else{
 			upperText.setBackgroundColor(getResources().getColor(R.color.red));
