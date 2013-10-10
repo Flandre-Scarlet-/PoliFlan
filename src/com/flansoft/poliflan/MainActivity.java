@@ -3,7 +3,6 @@ package com.flansoft.poliflan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,13 +16,14 @@ public class MainActivity extends Activity {
 
 	TextView upperText;
 	TextView lowerText;
-	Button[] answerButtons = new Button[5];
+	List<Button> answerButtons = new ArrayList<Button>();
 	
 	int countUpperWords = 1;
 	int countLowerWords = 0;
 	
 	List<Pronoun> pronouns = new ArrayList<Pronoun>();
-	Pronoun question;
+	List<Verb> verbs = new ArrayList<Verb>();
+	Lesson1Question question;
 	
 	public MainActivity() {
 		Pronoun pronoun = new Pronoun("I", "io", "я", Conjugation.FIRST);
@@ -46,6 +46,33 @@ public class MainActivity extends Activity {
 
 		pronoun = new Pronoun("they", "loro", "они", Conjugation.THIRD_PLURAL);
 		pronouns.add(pronoun);
+		
+		Verb verb = new Verb("speak", "parlare", "говорить");
+		verbs.add(verb);
+		
+		verb = new Verb("eat", "mangiare", "кушать");
+		verbs.add(verb);
+		
+		verb = new Verb("look", "guardare", "смотреть");
+		verbs.add(verb);
+		
+		verb = new Verb("play", "giocare", "играть");
+		verbs.add(verb);
+		
+		verb = new Verb("work", "lavorare", "работать");
+		verbs.add(verb);
+		
+		verb = new Verb("love", "amare", "любить");
+		verbs.add(verb);
+		
+		verb = new Verb("listen", "ascoltare", "слушать");
+		verbs.add(verb);
+		
+		verb = new Verb("learn", "imparare", "учить");
+		verbs.add(verb);
+		
+		verb = new Verb("live", "abitare", "жить");
+		verbs.add(verb);
 	}
 	
 	private void generateQuestion() {
@@ -53,11 +80,12 @@ public class MainActivity extends Activity {
 		lowerText.setText("");
 		setClickableAnswerButtons(true);
 		Collections.shuffle(pronouns);
-		shuffleButtons(answerButtons);
-		question = pronouns.get(0);
+		Collections.shuffle(verbs);
+		Collections.shuffle(answerButtons);
+		question = new Lesson1Question(pronouns.get(0), verbs.get(0));
 		upperText.setText(question.getEnglish());
-		for (int i = 0; i < answerButtons.length; ++i) {
-			answerButtons[i].setText(pronouns.get(i).getItalian());
+		for (int i = 0; i < answerButtons.size(); ++i) {
+			answerButtons.get(i).setText(pronouns.get(i).getItalian());
 		}
 	};
 	
@@ -69,12 +97,11 @@ public class MainActivity extends Activity {
 		upperText = (TextView)findViewById(R.id.textView1);
 		lowerText = (TextView)findViewById(R.id.textView2);
 		
-		int i = 0;
-		answerButtons[i++] = (Button)findViewById(R.id.button1);
-		answerButtons[i++] = (Button)findViewById(R.id.button2);
-		answerButtons[i++] = (Button)findViewById(R.id.button3);
-		answerButtons[i++] = (Button)findViewById(R.id.button4);
-		answerButtons[i++] = (Button)findViewById(R.id.button5);
+		answerButtons.add((Button) findViewById(R.id.button1));
+		answerButtons.add((Button) findViewById(R.id.button2));
+		answerButtons.add((Button) findViewById(R.id.button3));
+		answerButtons.add((Button) findViewById(R.id.button4));
+		answerButtons.add((Button) findViewById(R.id.button5));
 		
 		generateQuestion();
 	}
@@ -110,26 +137,9 @@ public class MainActivity extends Activity {
 		}, 1000);
 	}
 	
-	public void setClickableAnswerButtons(boolean set){
-		for (int i = 0; i < answerButtons.length; i++){
-			answerButtons[i].setClickable(set);
-		}
-//		LinearLayout layout = (LinearLayout) findViewById(R.id.LinearLayout1);
-//		for (int i = 0; i < layout.getChildCount(); i++) {
-//		    View child = layout.getChildAt(i);
-//		    child.setClickable(false);
-//		}setClickableAnswerButtons(false);
-	}
-	
-	// Implementing Fisher–Yates shuffle
-	private void shuffleButtons(Button[] ar) {
-		Random rnd = new Random();
-		for (int i = ar.length - 1; i > 0; i--) {
-			int index = rnd.nextInt(i + 1);
-			// Simple swap
-			Button a = ar[index];
-			ar[index] = ar[i];
-			ar[i] = a;
+	public void setClickableAnswerButtons(Boolean set){
+		for (Button button : answerButtons) {
+			button.setClickable(set);
 		}
 	}
 }

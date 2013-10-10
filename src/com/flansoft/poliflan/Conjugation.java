@@ -1,6 +1,7 @@
 package com.flansoft.poliflan;
 
 public enum Conjugation {
+	INFINITIVE,
 	FIRST,
 	SECOND,
 	THIRD,
