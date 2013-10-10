@@ -2,9 +2,7 @@ package com.flansoft.poliflan;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import android.app.Activity;
@@ -28,53 +26,25 @@ public class MainActivity extends Activity {
 	Pronoun question;
 	
 	public MainActivity() {
-		Map<String, String> wordMap = new HashMap<String, String>();
-		wordMap.put("en", "I");
-		wordMap.put("it", "io");
-		wordMap.put("ru", "я");
-		Pronoun pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		Pronoun pronoun = new Pronoun("I", "io", "я", Conjugation.FIRST);
 		pronouns.add(pronoun);
 		
-		wordMap = new HashMap<String, String>();
-		wordMap.put("en", "you");
-		wordMap.put("it", "tu");
-		wordMap.put("ru", "ты");
-		pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		pronoun = new Pronoun("you", "tu", "ты", Conjugation.SECOND);
 		pronouns.add(pronoun);
 
-		wordMap = new HashMap<String, String>();
-		wordMap.put("en", "he");
-		wordMap.put("it", "lui");
-		wordMap.put("ru", "он");
-		pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		pronoun = new Pronoun("he", "lui", "он", Conjugation.THIRD);
 		pronouns.add(pronoun);
 
-		wordMap = new HashMap<String, String>();
-		wordMap.put("en", "she");
-		wordMap.put("it", "lei");
-		wordMap.put("ru", "она");
-		pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		pronoun = new Pronoun("she", "lei", "она", Conjugation.THIRD);
 		pronouns.add(pronoun);
 
-		wordMap = new HashMap<String, String>();
-		wordMap.put("en", "we");
-		wordMap.put("it", "noi");
-		wordMap.put("ru", "мы");
-		pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		pronoun = new Pronoun("we", "noi", "мы", Conjugation.FIRST_PLURAL);
 		pronouns.add(pronoun);
 		
-		wordMap = new HashMap<String, String>();
-		wordMap.put("en", "you");
-		wordMap.put("it", "voi");
-		wordMap.put("ru", "ты");
-		pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		pronoun = new Pronoun("you", "voi", "ты", Conjugation.SECOND_PLURAL);
 		pronouns.add(pronoun);	
 
-		wordMap = new HashMap<String, String>();
-		wordMap.put("en", "they");
-		wordMap.put("it", "loro");
-		wordMap.put("ru", "они");
-		pronoun = new Pronoun(wordMap, Conjugation.FIRST);
+		pronoun = new Pronoun("they", "loro", "они", Conjugation.THIRD_PLURAL);
 		pronouns.add(pronoun);
 	}
 	
@@ -85,9 +55,9 @@ public class MainActivity extends Activity {
 		Collections.shuffle(pronouns);
 		shuffleButtons(answerButtons);
 		question = pronouns.get(0);
-		upperText.setText(question.getWords().get("en"));
+		upperText.setText(question.getEnglish());
 		for (int i = 0; i < answerButtons.length; ++i) {
-			answerButtons[i].setText(pronouns.get(i).getWords().get("it"));
+			answerButtons[i].setText(pronouns.get(i).getItalian());
 		}
 	};
 	
@@ -123,7 +93,7 @@ public class MainActivity extends Activity {
 	 
 	public void check(){
 		setClickableAnswerButtons(false);
-		String model_answer = question.getWords().get("it");
+		String model_answer = question.getItalian();
 		String answer = lowerText.getText().toString().trim();
 		Log.d("CHECK_upper", model_answer);
 		Log.d("CHECK_lower", answer);
