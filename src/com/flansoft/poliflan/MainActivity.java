@@ -6,9 +6,11 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -31,6 +33,9 @@ public class MainActivity extends Activity {
 	}
 	
 	private void generateQuestion() {
+		setClickableAnswerButtons(true);
+		upperText.setBackgroundColor(getResources().getColor(R.color.white));
+		lowerText.setText("");
 		String[] words = pronouns.keySet().toArray(new String[pronouns.keySet().size()]);
 		int random = new Random().nextInt(words.length);
 		for (int i = 0; i < words.length; i++) {
@@ -72,6 +77,11 @@ public class MainActivity extends Activity {
 	}
 	 
 	public void check(){
+		
+
+		
+		setClickableAnswerButtons(false);
+		
 		String model_answer = pronouns.get(upperText.getText().toString());
 		String answer = lowerText.getText().toString().trim();
 		Log.d("CHECK_upper", model_answer);
@@ -81,5 +91,22 @@ public class MainActivity extends Activity {
 		} else{
 			upperText.setBackgroundColor(getResources().getColor(R.color.red));
 		}
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable(){
+			public void run(){
+				generateQuestion();
+			}
+		}, 3000);
+	}
+	
+	public void setClickableAnswerButtons(boolean set){
+		for (int i = 0; i < answerButtons.length; i++){
+			answerButtons[i].setClickable(set);
+		}
+//		LinearLayout layout = (LinearLayout) findViewById(R.id.LinearLayout1);
+//		for (int i = 0; i < layout.getChildCount(); i++) {
+//		    View child = layout.getChildAt(i);
+//		    child.setClickable(false);
+//		}
 	}
 }
