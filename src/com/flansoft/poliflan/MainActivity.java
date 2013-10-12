@@ -1,12 +1,16 @@
 package com.flansoft.poliflan;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -29,7 +33,9 @@ public class MainActivity extends Activity {
 	final String TEST_GOOD = "test_good";
 	final String TEST_BAD = "test_bad";
 	
-	Lesson1Question question;
+	private static final String TAG = "polifland";
+	private Dictionary dictionary;
+	private Lesson1 lesson;
 	
 	private void generateQuestion() {
 		countLowerWords = 0;
@@ -38,31 +44,44 @@ public class MainActivity extends Activity {
 		lowerText.setText("");
 		setClickableAnswerButtons(true);
 		Collections.shuffle(answerButtons);
-		question = new Lesson1Question();
-		upperText.setText(question.getEnglish());
-		Translatable[] choices = question.getPronounChoices();
+		lesson = new Lesson1(dictionary);
+		upperText.setText(lesson.getQuestion());
+		List<String> options = lesson.getCases();
 		for (int i = 0; i < answerButtons.size(); ++i) {
-			answerButtons.get(i).setText(choices[i].getItalian());
+			answerButtons.get(i).setText(options.get(i));
 		}
 	};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		
-		upperText = (TextView)findViewById(R.id.textView1);
-		lowerText = (TextView)findViewById(R.id.textView2);
-		goodText = (TextView)findViewById(R.id.textView3);
-		badText = (TextView)findViewById(R.id.textView4);
-		
-		answerButtons.add((Button) findViewById(R.id.button1));
-		answerButtons.add((Button) findViewById(R.id.button2));
-		answerButtons.add((Button) findViewById(R.id.button3));
-		answerButtons.add((Button) findViewById(R.id.button4));
-		answerButtons.add((Button) findViewById(R.id.button5));
-		
-		generateQuestion();
+		DictionaryParser parser = new DictionaryParser(getResources().openRawResource(R.raw.dictionary));
+		try {
+			dictionary = parser.parse();
+			setContentView(R.layout.activity_main);
+			
+			upperText = (TextView)findViewById(R.id.textView1);
+			lowerText = (TextView)findViewById(R.id.textView2);
+			goodText = (TextView)findViewById(R.id.textView3);
+			badText = (TextView)findViewById(R.id.textView4);
+			
+			answerButtons.add((Button) findViewById(R.id.button1));
+			answerButtons.add((Button) findViewById(R.id.button2));
+			answerButtons.add((Button) findViewById(R.id.button3));
+			answerButtons.add((Button) findViewById(R.id.button4));
+			answerButtons.add((Button) findViewById(R.id.button5));
+			
+			generateQuestion();
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void onClick(View v){
@@ -73,23 +92,24 @@ public class MainActivity extends Activity {
 		if (countUpperWords <= countLowerWords) {
 			check();
 		} else {
-			Translatable[] choices = question.getVerbChoices();
+			List<String> options = lesson.getCases();
+			Collections.shuffle(answerButtons);
 			for (int i = 0; i < answerButtons.size(); ++i) {
-				answerButtons.get(i).setText(choices[i].getItalian());
+				if (options.size() > i) {
+					answerButtons.get(i).setText(options.get(i));
+				}
 			}
 		}
 	}
 	 
 	public void check(){
 		setClickableAnswerButtons(false);
-		String model_answer = question.getItalian();
 		String answer = lowerText.getText().toString().trim();
-		Log.d("CHECK_upper", model_answer);
-		Log.d("CHECK_lower", answer);
-		if (model_answer.equals(answer)) {
+		Log.d(TAG, "answer=" + lesson.getAnswer() + "; your answer=" + answer);
+		if (lesson.getAnswer().equals(answer)) {
 			upperText.setBackgroundColor(getResources().getColor(R.color.green));
 			saveStat(true);
-		} else{
+		} else {
 			saveStat(false);
 			upperText.setBackgroundColor(getResources().getColor(R.color.red));
 		}

@@ -3,37 +3,34 @@ package com.flansoft.poliflan;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Pronoun implements Translatable {
+public class Pronoun {
 
-	Conjugation conjugation;
-	Map<String, String> words = new HashMap<String, String>();
+	private Map<String, String> words = new HashMap<String, String>();
+	private boolean isPolite;
 	
-	public Pronoun(String en, String it, String ru, Conjugation conjugation) {
-		words.put("en", en);
-		words.put("it", it);
-		words.put("ru", ru);
-		this.conjugation = conjugation;
+	public Pronoun(Map<String, String> words) {
+		this.words = words;
+	}
+	
+	public Pronoun(Map<String, String> words, boolean isPolite) {
+		this.words = words;
+		this.isPolite = isPolite;
 	}
 
-	public Conjugation getConjugation() {
-		return conjugation;
-	}
-
-	@Override
-	public String getItalian() {
-		return words.get("it");
-	}
-
-	@Override
 	public String getEnglish() {
-		if (conjugation == Conjugation.SECOND_PLURAL) {
+		if (isPolite) {
+			return words.get("en") + " (polite)";
+		} else if (words.get("it").equals("voi")) {
 			return words.get("en") + " (plural)";
 		}
 		return words.get("en");
 	}
-
-	@Override
-	public String getRussian() {
-		return words.get("ru");
+	
+	public String getItalian() {
+		return words.get("it");
+	}
+	
+	public boolean isPolite() {
+		return isPolite;
 	}
 }

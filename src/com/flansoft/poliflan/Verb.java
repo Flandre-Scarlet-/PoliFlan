@@ -3,15 +3,12 @@ package com.flansoft.poliflan;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Verb implements Translatable {
+public class Verb {
 
 	private Map<String, String> infinitive = new HashMap<String, String>();
-	private Conjugation conjugation = Conjugation.INFINITIVE;
 	
-	public Verb(String en, String it, String ru) {
-		this.infinitive.put("en",  en);
-		this.infinitive.put("it",  it);
-		this.infinitive.put("ru", ru);
+	public Verb(Map<String, String> infinitive) {
+		this.infinitive = infinitive;
 	}
 	
 	private String getItalianRoot() {
@@ -20,51 +17,35 @@ public class Verb implements Translatable {
 		return word;
 	}
 	
-	public void setConjugation(Conjugation conjugation) {
-		this.conjugation = conjugation;
+	public String getEnglish(String pronoun) {
+		if (pronoun == null || "".equals(pronoun)) {
+			return infinitive.get("en");
+		}
+		if (pronoun.equals("he") || pronoun.equals("she")) {
+			return infinitive.get("en") + 's';
+		}
+		return infinitive.get("en");
+		
 	}
 	
-	@Override
-	public String getItalian() {
+	public String getItalian(String pronoun) {
+		if (pronoun == null || "".equals(pronoun)) {
+			return infinitive.get("it");
+		}
 		String root = getItalianRoot();
-		switch (conjugation) {
-		case INFINITIVE:
-			return this.infinitive.get("it");
-		case FIRST:
+		if (pronoun.equals("io")) {
 			return root + "o";
-		case SECOND:
+		} else if (pronoun.equals("tu")) {
 			return root + "i";
-		case THIRD:
+		} else if (pronoun.equals("lui") || pronoun.equals("lei") || pronoun.equals("Lei")) {
 			return root + "a";
-		case FIRST_PLURAL:
+		} else if (pronoun.equals("noi")) {
 			return root + "iamo";
-		case SECOND_PLURAL:
+		} else if (pronoun.equals("voi")) {
 			return root + "ate";
-		case THIRD_PLURAL:
+		} else if (pronoun.equals("loro")) {
 			return root + "ano";
 		}
 		return this.infinitive.get("it");
-	}
-
-	@Override
-	public String getEnglish() {
-		switch (conjugation) {
-		case INFINITIVE:
-		case FIRST:
-		case SECOND:
-		case FIRST_PLURAL:
-		case SECOND_PLURAL:
-		case THIRD_PLURAL:
-			return this.infinitive.get("en");
-		case THIRD:
-			return this.infinitive.get("en") + "s";
-		}
-		return this.infinitive.get("en");
-	}
-
-	@Override
-	public String getRussian() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
