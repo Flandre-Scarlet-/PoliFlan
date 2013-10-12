@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<dictionary>
+	<pronoun>
+		<en>
+			<word>I</word>
+		</en>
+		<it>
+			<word>io</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>you</word>
+		</en>
+		<it>
+			<word>tu</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>you</word>
+			<specific>polite</specific>
+		</en>
+		<it>
+			<word>Lei</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>he</word>
+		</en>
+		<it>
+			<word>lua</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>she</word>
+		</en>
+		<it>
+			<word>lei</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>we</word>
+		</en>
+		<it>
+			<word>noi</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>you</word>
+			<specific>plural</specific>
+		</en>
+		<it>
+			<word>voi</word>
+		</it>
+	</pronoun>
+	
+	<pronoun>
+		<en>
+			<word>they</word>
+		</en>
+		<it>
+			<word>loro</word>
+		</it>
+	</pronoun>
+	
+	<verb>
+		<en>
+			<word>speak</word>
+		</en>
+		<it>
+			<word>parlare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>eat</word>
+		</en>
+		<it>
+			<word>mangare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>play</word>
+		</en>
+		<it>
+			<word>giocare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>look</word>
+		</en>
+		<it>
+			<word>guardare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>work</word>
+		</en>
+		<it>
+			<word>lavorare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>love</word>
+		</en>
+		<it>
+			<word>amare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>listen</word>
+		</en>
+		<it>
+			<word>ascoltare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>learn</word>
+		</en>
+		<it>
+			<word>imparare</word>
+		</it>
+	</verb>
+	
+	<verb>
+		<en>
+			<word>live</word>
+		</en>
+		<it>
+			<word>abitare</word>
+		</it>
+	</verb>
+</dictionary>
