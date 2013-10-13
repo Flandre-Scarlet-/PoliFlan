@@ -9,17 +9,19 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+	LinearLayout linearLayout;
 	TextView upperText;
 	TextView lowerText;
 	List<Button> answerButtons = new ArrayList<Button>();
@@ -30,8 +32,9 @@ public class MainActivity extends Activity {
 	int countLowerWords = 0;
 	
 	SharedPreferences preferences;
-	final String TEST_GOOD = "test_good";
-	final String TEST_BAD = "test_bad";
+	Statistics statistics;
+	
+	final String LESSON_NUBER_TEST = "lesson1";
 	
 	private static final String TAG = "polifland";
 	private Dictionary dictionary;
@@ -39,9 +42,11 @@ public class MainActivity extends Activity {
 	
 	private void generateQuestion() {
 		countLowerWords = 0;
-		loadStat();
+		goodText.setText(statistics.getGoodStatistics());
+		badText.setText(statistics.getBadStatistics());
 		upperText.setBackgroundColor(getResources().getColor(R.color.white));
 		lowerText.setText("");
+		linearLayout.setClickable(false);
 		setClickableAnswerButtons(true);
 		Collections.shuffle(answerButtons);
 		lesson = new Lesson1(dictionary);
@@ -56,10 +61,14 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		DictionaryParser parser = new DictionaryParser(getResources().openRawResource(R.raw.dictionary));
+		preferences = getPreferences(MODE_PRIVATE);
+		statistics = new Statistics(preferences, LESSON_NUBER_TEST);
 		try {
 			dictionary = parser.parse();
 			setContentView(R.layout.activity_main);
 			
+			
+			linearLayout = (LinearLayout)findViewById(R.id.LinearLayout1);
 			upperText = (TextView)findViewById(R.id.textView1);
 			lowerText = (TextView)findViewById(R.id.textView2);
 			goodText = (TextView)findViewById(R.id.textView3);
@@ -101,6 +110,10 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
+	
+	public void linearOnClick(View v){
+		generateQuestion();
+	}
 	 
 	public void check(){
 		setClickableAnswerButtons(false);
@@ -108,17 +121,13 @@ public class MainActivity extends Activity {
 		Log.d(TAG, "answer=" + lesson.getAnswer() + "; your answer=" + answer);
 		if (lesson.getAnswer().equals(answer)) {
 			upperText.setBackgroundColor(getResources().getColor(R.color.green));
-			saveStat(true);
+			statistics.setStatistics(true);
 		} else {
-			saveStat(false);
+			statistics.setStatistics(false);
+			lowerText.setText(Html.fromHtml("Your answer is \"<b>" + answer + "</b>\" <br>" + "Correct answer is \"<b>" + lesson.getAnswer() + "</b>\""));
 			upperText.setBackgroundColor(getResources().getColor(R.color.red));
 		}
-		Handler handler = new Handler();
-		handler.postDelayed(new Runnable(){
-			public void run(){
-				generateQuestion();
-			}
-		}, 1000);
+		linearLayout.setClickable(true);
 	}
 	
 	public void setClickableAnswerButtons(Boolean set){
@@ -126,28 +135,4 @@ public class MainActivity extends Activity {
 			button.setClickable(set);
 		}
 	}
-	
-	private void loadStat(){
-		preferences = getPreferences(MODE_PRIVATE);
-		goodText.setText(preferences.getString(TEST_GOOD, "0"));
-		badText.setText(preferences.getString(TEST_BAD, "0"));
-		
-	}
-	
-	private void saveStat(boolean ifGood){
-		preferences = getPreferences(MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		
-		if (ifGood){
-			int sumGoodCount = Integer.parseInt(preferences.getString(TEST_GOOD, "0")) + 1;
-			editor.putString(TEST_GOOD, "" + sumGoodCount);
-			Log.d("sumGoodCount", "" + sumGoodCount);
-		}else{
-			int sumBadCount = Integer.parseInt(preferences.getString(TEST_BAD, "0")) + 1;
-			editor.putString(TEST_BAD, "" + sumBadCount);
-			Log.d("sumBadCount", "" + sumBadCount);
-		}
-		editor.commit();
-	}
-	
 }
