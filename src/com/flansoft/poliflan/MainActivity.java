@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 	SharedPreferences preferences;
 	Statistics statistics;
 	
-	final String LESSON_NUBER_TEST = "lesson1";
+	private String lessonNumber;
 	
 	private static final String TAG = "polifland";
 	private Dictionary dictionary;
@@ -60,9 +60,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		lessonNumber = getIntent().getStringExtra("lessonNumber");
 		DictionaryParser parser = new DictionaryParser(getResources().openRawResource(R.raw.dictionary));
 		preferences = getPreferences(MODE_PRIVATE);
-		statistics = new Statistics(preferences, LESSON_NUBER_TEST);
+		statistics = new Statistics(preferences, lessonNumber);
 		try {
 			dictionary = parser.parse();
 			setContentView(R.layout.activity_main);
