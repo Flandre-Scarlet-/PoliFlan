@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -28,9 +27,6 @@ public class MainActivity extends Activity {
 	TextView goodText;
 	TextView badText;
 	
-	int countUpperWords = 2;
-	int countLowerWords = 0;
-	
 	SharedPreferences preferences;
 	Statistics statistics;
 	
@@ -41,7 +37,6 @@ public class MainActivity extends Activity {
 	private Lesson1 lesson;
 	
 	private void generateQuestion() {
-		countLowerWords = 0;
 		goodText.setText(statistics.getGoodStatistics());
 		badText.setText(statistics.getBadStatistics());
 		upperText.setBackgroundColor(getResources().getColor(R.color.white));
@@ -51,7 +46,7 @@ public class MainActivity extends Activity {
 		Collections.shuffle(answerButtons);
 		lesson = new Lesson1(dictionary);
 		upperText.setText(lesson.getQuestion());
-		List<String> options = lesson.getCases();
+		List<String> options = lesson.getNextCases();
 		for (int i = 0; i < answerButtons.size(); ++i) {
 			answerButtons.get(i).setText(options.get(i));
 		}
@@ -80,7 +75,6 @@ public class MainActivity extends Activity {
 			answerButtons.add((Button) findViewById(R.id.button3));
 			answerButtons.add((Button) findViewById(R.id.button4));
 			answerButtons.add((Button) findViewById(R.id.button5));
-			
 			generateQuestion();
 		} catch (NotFoundException e) {
 			// TODO Auto-generated catch block
@@ -98,11 +92,11 @@ public class MainActivity extends Activity {
 		Button b = (Button)v;
 		String buttonText = b.getText().toString();
 		lowerText.setText(lowerText.getText() + buttonText + " ");
-		countLowerWords++;
-		if (countUpperWords <= countLowerWords) {
+		int answeredWords = lowerText.getText().toString().split(" ").length;
+		if (lesson.getAnswerWordsCount() <= answeredWords) {
 			check();
 		} else {
-			List<String> options = lesson.getCases();
+			List<String> options = lesson.getNextCases();
 			Collections.shuffle(answerButtons);
 			for (int i = 0; i < answerButtons.size(); ++i) {
 				if (options.size() > i) {
