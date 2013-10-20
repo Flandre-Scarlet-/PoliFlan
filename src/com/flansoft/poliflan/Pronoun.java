@@ -8,12 +8,13 @@ public class Pronoun {
 	private Map<String, String> words = new HashMap<String, String>();
 	private boolean isPolite;
 	
-	public Pronoun(Map<String, String> words) {
-		this.words = words;
+	public Pronoun(String english, String italian) {
+		this.words.put("en", english);
+		this.words.put("it", italian);
 	}
 	
-	public Pronoun(Map<String, String> words, boolean isPolite) {
-		this.words = words;
+	public Pronoun(String english, String italian, boolean isPolite) {
+		this(english, italian);
 		this.isPolite = isPolite;
 	}
 

@@ -6,9 +6,16 @@ import java.util.Map;
 public class Verb {
 
 	private Map<String, String> infinitive = new HashMap<String, String>();
+	private String englishPast = "";
 	
-	public Verb(Map<String, String> infinitive) {
-		this.infinitive = infinitive;
+	public Verb(String english, String italian) {
+		infinitive.put("en", english);
+		infinitive.put("it", italian);
+	}
+	
+	public Verb(String english, String italian, String englishPast) {
+		this(english, italian);
+		this.englishPast = englishPast;
 	}
 	
 	private String getItalianRoot() {
@@ -26,6 +33,18 @@ public class Verb {
 		}
 		return infinitive.get("en");
 		
+	}
+	
+	public String getEnglishPast() {
+		if (englishPast.length() > 0) {
+			return englishPast;
+		}
+		String inf = infinitive.get("en");
+		char lastChar = inf.charAt(inf.length() - 1);
+		if (lastChar == 'e') {
+			return inf + "d";
+		}
+		return inf + "ed";
 	}
 	
 	public String getItalian(String pronoun) {
@@ -47,5 +66,10 @@ public class Verb {
 			return root + "ano";
 		}
 		return this.infinitive.get("it");
+	}
+	
+	public String getItalianPast() {
+		String root = getItalianRoot();
+		return root + "ato";
 	}
 }
